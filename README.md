@@ -2,7 +2,7 @@
 
 An example Power BI `.pbix` file that connects to the 3tx platform and fetches data for you to perform analysis upon. It is expected that a technical person who is more familiar with Power BI prepares a dashboard for the intended audience since some setup is required.
 
-![screenie](3tx-pbi-example.png)
+![screenie](3tx-pbi-example.jpg)
 
 ## 🚨 Work in Progress
 
