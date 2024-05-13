@@ -7,9 +7,15 @@ An example Power BI `.pbix` file that connects to the 3tx platform and fetches d
 
 ![screenie](3tx-pbi-example.jpg)
 
-## 🚨 Work in Progress
+🚀 Please be aware that this is currently an example, and is designed to showcase using the 3tx API for Power BI. You will need knowledge of Power BI to make full use of this early proof of concept.
 
-Please be aware that this is currently an example, and is designed to showcase using the 3tx API for Power BI. You will need knowledge of Power BI to make full use of this early proof of concept.
+## What is 3tx?
+
+> Real-Time Insights for Enhanced Training, Competence, and Learning Management
+
+3tx is a competency and compliance platform provided by 3t Digital. If you want world-class workforce training management, come to us. We can help.
+
+https://www.3tglobal.com/digital/
 
 ## 👏 Getting Started
 
