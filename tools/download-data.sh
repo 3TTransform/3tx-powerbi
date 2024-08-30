@@ -5,18 +5,15 @@
 # This script uses your data key and organisation ID to fetch parquet files for processing.
 #
 # The environment defaults to production. Can be either production or uat.
+# Use the -c flag to convert downloaded parquet files to CSV.
 #
-# Usage: ./download-data.sh -o <organisationId> -k <dataKey> [-e <environment>]
+# Usage: ./download-data.sh -o <organisationId> -k <dataKey> [-e <environment>] [-c]
 #
-# Example: ./download-data.sh -o "fe32b459-6c83-4aab-825e-af94c0861e09" -k "78d7da12-a61e-4bd3-8f3d-d7209b027dc9" -e "uat"
+# Example: ./download-data.sh -o "fe32b459-6c83-4aab-825e-af94c0861e09" -k "78d7da12-a61e-4bd3-8f3d-d7209b027dc9" -e "uat" -c
 
 # Default values
 environment="production"
-
-function csv_to_parquet() {
-    file_path="$1"
-    duckdb -c "COPY (SELECT * FROM read_csv_auto('$file_path')) TO '${file_path%.*}.parquet' (FORMAT PARQUET);"
-}
+convert_to_csv=false
 
 function parquet_to_csv() {
     file_path="$1"
@@ -24,13 +21,15 @@ function parquet_to_csv() {
 }
 
 # Parse command line arguments
-while getopts ":o:k:e:" opt; do
+while getopts ":o:k:e:c" opt; do
   case $opt in
     o) organisationId="$OPTARG"
     ;;
     k) dataKey="$OPTARG"
     ;;
     e) environment="$OPTARG"
+    ;;
+    c) convert_to_csv=true
     ;;
     \?) echo "Invalid option -$OPTARG" >&2
     exit 1
@@ -41,7 +40,7 @@ done
 # Check if required parameters are provided
 if [ -z "$organisationId" ] || [ -z "$dataKey" ]; then
   echo "Error: organisationId and dataKey are required."
-  echo "Usage: $0 -o <organisationId> -k <dataKey> [-e <environment>]"
+  echo "Usage: $0 -o <organisationId> -k <dataKey> [-e <environment>] [-c]"
   exit 1
 fi
 
@@ -69,8 +68,10 @@ for fileType in "${fileTypes[@]}"; do
     outputFile="./${organisationId}_${fileType}.parquet"
     if curl -s -o "$outputFile" "$signedUrl"; then
       echo "File downloaded successfully: $outputFile"
-      parquet_to_csv "$outputFile"
-      echo "Converted to CSV: ${outputFile%.*}.csv"
+      if [ "$convert_to_csv" = true ]; then
+        parquet_to_csv "$outputFile"
+        echo "Converted to CSV: ${outputFile%.*}.csv"
+      fi
     else
       echo "Error: Failed to download file for $fileType" >&2
     fi
