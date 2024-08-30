@@ -13,6 +13,16 @@
 # Default values
 environment="production"
 
+function csv_to_parquet() {
+    file_path="$1"
+    duckdb -c "COPY (SELECT * FROM read_csv_auto('$file_path')) TO '${file_path%.*}.parquet' (FORMAT PARQUET);"
+}
+
+function parquet_to_csv() {
+    file_path="$1"
+    duckdb -c "COPY (SELECT * FROM '$file_path') TO '${file_path%.*}.csv' (HEADER, FORMAT 'csv');"
+}
+
 # Parse command line arguments
 while getopts ":o:k:e:" opt; do
   case $opt in
@@ -59,6 +69,8 @@ for fileType in "${fileTypes[@]}"; do
     outputFile="./${organisationId}_${fileType}.parquet"
     if curl -s -o "$outputFile" "$signedUrl"; then
       echo "File downloaded successfully: $outputFile"
+      parquet_to_csv "$outputFile"
+      echo "Converted to CSV: ${outputFile%.*}.csv"
     else
       echo "Error: Failed to download file for $fileType" >&2
     fi

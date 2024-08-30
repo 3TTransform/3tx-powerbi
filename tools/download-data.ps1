@@ -1,9 +1,10 @@
 <#
 .SYNOPSIS
-    Download parquet data files from the 3tx platform
+    Download parquet data files from the 3tx platform and convert them to CSV
 
 .DESCRIPTION
     This script uses your data key and organisation ID to fetch parquet files for processing.
+    It then converts the downloaded parquet files to CSV format using DuckDB.
 
 .PARAMETER organisationId
     The organisation ID.
@@ -26,6 +27,29 @@ param (
     [Parameter(Mandatory=$false)]
     [string]$environment = "production"
 )
+
+function Convert-ParquetToCsv {
+    param (
+        [string]$filePath
+    )
+    # Remove leading ./ from the filePath if it exists
+    $filePath = $filePath -replace '^\.[\\/]', ''
+    Write-Output "Starting conversion of $filePath to CSV"
+    $outputPath = [System.IO.Path]::ChangeExtension($filePath, "csv")
+    Write-Output "Output path will be: $outputPath"
+    
+    try {
+        duckdb -c "COPY (SELECT * FROM read_parquet('$filePath')) TO '$outputPath' (HEADER, FORMAT 'csv');"
+        
+        if (Test-Path $outputPath) {
+            Write-Output "CSV file successfully created: $outputPath"
+        } else {
+            throw "CSV file was not created at expected path: $outputPath"
+        }
+    } catch {
+        throw "An error occurred during conversion: $_"
+    }
+}
 
 $headers = @{}
 try {
@@ -51,6 +75,7 @@ try {
                 $outputFile = ".\$organisationId" + "_$fileType.parquet"
                 Invoke-WebRequest -Uri $signedUrl -OutFile $outputFile
                 Write-Output "File downloaded successfully: $outputFile"
+                Convert-ParquetToCsv -filePath $outputFile
             } else {
                 Write-Error "Failed to obtain signed URL for $fileType"
             }

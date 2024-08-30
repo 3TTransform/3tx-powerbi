@@ -24,4 +24,15 @@ https://www.3tglobal.com/digital/
 
 The example file contains some simple metrics to get started, but they are by no means useful and it is suggested you delete them and use the data for your own needs.
 
+# Advanced Tools
 
+We provide two scripts, one for Windows and one for Mac/Linux
+
+- `download-data.ps1` - Windows powershell
+- `download-data.sh` - Mac/Linux
+
+For Mac and Linux you will also need `jq` installed.
+
+These scripts pull down all your `workforce`, `bookings`, `attestations`, `requirements`, `activities` parquet files so you can run data analysis on them locally.
+
+Please see the files themselves for the parameters.
