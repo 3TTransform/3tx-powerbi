@@ -43,7 +43,7 @@ There are 5 facets to the data, each of which represents the current state of co
 
 - `workforce` - This provides the ability to slice your data by `groups`
 - `bookings` - This allows you to know which gaps will be filled by training in the future
-- `attestations` - This is a lost of proof that people have competed an activity
+- `attestations` - This is a list of proof that people have competed an activity
 - `requirements` - This is a list of activities people need within a `group`
 - `activities` - This is a list of possible activities
 
