@@ -36,3 +36,15 @@ For Mac and Linux you will also need `jq` installed.
 These scripts pull down all your `workforce`, `bookings`, `attestations`, `requirements`, `activities` parquet files so you can run data analysis on them locally.
 
 Please see the files themselves for the parameters.
+
+# About the Data
+
+There are 5 facets to the data, each of which represents the current state of competency and compliance in your organisation.
+
+- `workforce` - This provides the ability to slice your data by `groups`
+- `bookings` - This allows you to know which gaps will be filled by training in the future
+- `attestations` - This is a lost of proof that people have competed an activity
+- `requirements` - This is a list of activities people need within a `group`
+- `activities` - This is a list of possible activities
+
+Note that some of the data has been denormalised to simplify queries, for example, a `bookings` record will have an `activity` ID but will also contain the name of the `activity`, so you don't have to consult that table.
